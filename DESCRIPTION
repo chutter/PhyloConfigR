@@ -1,0 +1,28 @@
+Package: PhyloCap
+Title: Package For processing high-throughput sequencing data from targeted sequence capture 
+Version: 0.2.0
+Authors@R: 
+    person(given = "Carl",
+           family = "Hutter",
+           role = c("aut", "cre"),
+           email = "carl.hutter@gmail.com",
+           comment = c(ORCID = "0000-0001-6381-6339"))
+Description: This R package can process high-throughput sequence data from raw reads to alignments 
+  ready for analysis in popular phylogenetics software. The package acts as a wrapper around other
+  programs to preprocess the raw read sequence data for alignment. The package implements the program
+  sPades to assemble the raw reads. Finally, custom functions can match assembled contigs to various
+  types of target files (transcripts, exons, UCEs, etc.) and align the matching targets individually
+  for each locus. The package can trim and further process alignments for different types of programs
+  and analyses (alignment conversion, concatenation, alignment statistics, trimming).
+Depends: 
+        R (>= 4.0.0),
+        data.table (>= 1.10)
+License: `use_gpl3_license()`
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Imports:
+        ape (>= 5.0),
+        stringr (>= 1.4)
+        
