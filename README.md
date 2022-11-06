@@ -1,4 +1,4 @@
-## PhyloConfigR: R Package For phylogenomic configuration, alignment formatting, alignment summary statistics, and dataset filtering
+# PhyloConfigR: R Package For phylogenomic configuration, alignment formatting, alignment summary statistics, and dataset filtering
 
 With this R package you can prepare your alignments for various types of phylogenomic analyses: 
 1) Summarize alignment statistics (length, samples, parsimony informative sites, missing data, GC content) 
@@ -25,7 +25,7 @@ In addition, there are numerous functions to aid with specific phylogenetic soft
   - Set up alignments for input
 
 
-# Citation
+## Citation
 
 Publication is in review. Hutter and Duellman, in review. 
 
