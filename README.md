@@ -1,4 +1,4 @@
-## R Package For phylogenomic configuration, alignment formatting, alignment summary statistics, and dataset filtering
+## PhyloConfigR: R Package For phylogenomic configuration, alignment formatting, alignment summary statistics, and dataset filtering
 
 In extreme cases of incomplete lineage sorting (ILS), it is possible that the most common gene tree topology will not match the true species tree, a phenomenon that has been termed “the anomaly zone”. For species trees in the anomaly zone, concatenation methods can provide strong support for the most common anomalous topology (i.e. anomalous gene trees: “AGTs”) while species tree methods can recover the correct species tree as ILS is into account. However, erroneous gene trees ("EGTs") has been shown to lead to erroneous species tree topologies when gene tree estimation error is high. EGTs resulting from non-biological properties of alignments (e.g. missing data, informative sites, alignment length) produces discordant EGTs from the true species tree, and filtering based on the informativeness of the alignments can lead to more robust species tree estimation (Hutter and Duellman, in review). 
 
