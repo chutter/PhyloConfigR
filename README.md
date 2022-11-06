@@ -1,5 +1,28 @@
 ## PhyloConfigR: R Package For phylogenomic configuration, alignment formatting, alignment summary statistics, and dataset filtering
 
+With this R package you can prepare your alignments for various types of phylogenomic analyses: 
+1) Summarize alignment statistics (length, samples, parsimony informative sites, missing data, GC content) 
+2) Rename taxa in an alignment
+3) Rename alignments in a folder
+4) Filter alignments and create sub datasets from alignment stats
+5) Filter gene trees based on alignments
+6) Collapse nodes with specific support into polytomies
+7) Remove taxa from alignment
+
+In addition, there are numerous functions to aid with specific phylogenetic software
+1) Astral-III
+  - Create input files
+  - Batch analyses multiple datasets
+  - Plot Astral-III pie charts at nodes
+2) IQTREE2
+  - Plot concordance factors on tree
+  - Gene jackknife genomic dataset
+3) BPP
+  - Set up alignments for immediate input
+  - Generate control file
+4) PhyloNet
+  - Set up alignments for input
+
 # Citation
 
 Publication is in review. Hutter and Duellman, in review. 
