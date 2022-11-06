@@ -2,8 +2,8 @@
 
 With this R package you can prepare your alignments for various types of phylogenomic analyses: 
 1) Summarize alignment statistics (length, samples, parsimony informative sites, missing data, GC content) 
-2) Rename taxa in an alignment
-3) Rename alignments in a folder
+2) Renaming (alignment names, taxa in an alignment)
+3) Alignment trimming
 4) Filter alignments and create sub datasets from alignment stats
 5) Filter gene trees based on alignments
 6) Collapse nodes with specific support into polytomies
@@ -12,8 +12,9 @@ With this R package you can prepare your alignments for various types of phyloge
 In addition, there are numerous functions to aid with specific phylogenetic software
 1) Astral-III
   - Create input files
+  - Run and import ASTRAL-III results into R
   - Batch analyses multiple datasets
-  - Plot Astral-III pie charts at nodes
+  - Plot Astral-III pie charts (proportion of gene trees that support that relationship) at nodes
 2) IQTREE2
   - Plot concordance factors on tree
   - Gene jackknife genomic dataset
@@ -22,6 +23,7 @@ In addition, there are numerous functions to aid with specific phylogenetic soft
   - Generate control file
 4) PhyloNet
   - Set up alignments for input
+
 
 # Citation
 
@@ -35,11 +37,11 @@ For now, you can cite the R package by linking to this GitHub if you use it.
 To use all the functions, the following programs are needed if you wish to use them:
   1) ASTRAL-III is available on GitHub here: https://github.com/smirarab/ASTRAL
   2) IQTREE 2, specifically version 2 or higher: http://www.iqtree.org
-  3) BPP, 
+  3) BPP, latest version 
   
 Instructions for installation and testing ASTRAL-III, IQTREE 2, and BPP are included in the respective documentation.
 
-PhyloConfigR depends on two other R packages:
+PhyloConfigR depends on three other R packages:
   1) ape (>=3.0)
   2) data.table (>=1.12)
   3) stringr (>= 1.4)
@@ -57,7 +59,6 @@ To install PhyloConfigR, you can use the R package devtools. Here are step-by-st
 5) Devtools should finish and say the packages loaded properly. Load the packages with library(PhyloConfigR). 
 
 And installation should be complete. 
-
 
 
 ## 2) Setting up R environment
