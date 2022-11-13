@@ -53,15 +53,15 @@ generateBPP = function(alignment.directory = NULL,
                        overwrite = FALSE) {
 
   # #Debug setup
-  library(PhyloCap)
-  setwd("/Volumes/LaCie/Hylidae/BPP/Hylidae/runs/PIS_400")
-  alignment.directory = "/Volumes/LaCie/Hylidae/BPP/Hylidae/filtered-alignments/pis_400"
-  output.name = "hylidae"
-  population.file = "sample"
-  overwrite = TRUE
-
-  tree.file = "/Volumes/LaCie/Hylidae/Alignments/Filtered/Best/all-markers_trimmed_filters_S70-L3000-PIN10-PIX50.phy.treefile"
-  outgroups = c("Phyllomedusa_tomopterna_WED_55506", "Nyctimystes_infrafrenatus_SLT_771")
+  # library(PhyloCap)
+  # setwd("/Volumes/LaCie/Hylidae/BPP/Hylidae")
+  # alignment.directory = "/Volumes/LaCie/Hylidae/Alignments/locus-combined"
+  # output.name = "gene"
+  # population.file = "sample"
+  # overwrite = TRUE
+  #
+  # tree.file = "/Volumes/LaCie/Hylidae/Alignments/Filtered/Best/all-markers_trimmed_filters_S70-L3000-PIN10-PIX50.phy.treefile"
+  # outgroups = c("Phyllomedusa_tomopterna_WED_55506", "Nyctimystes_infrafrenatus_SLT_771")
 
   #Gets list of alignments
   align.files = list.files(alignment.directory, full.names = T)
