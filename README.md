@@ -86,7 +86,7 @@ bpp.path = "/usr/local/bin/BPP/bin/bpp"
 3)Setup your working directory and create if necessary
 
 ```r
-work.dir = "/Test_FilterZone"
+work.dir = "/Test_PhyloConfigR"
 dir.create(work.dir)
 setwd(work.dir)
 ```
