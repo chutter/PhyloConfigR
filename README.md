@@ -63,32 +63,16 @@ And installation should be complete.
 
 ## 2) Setting up R environment
 
-I have included an R script in the main repository with some examples. It is also described here in detail. 
+I have included an R script in the main repository with some examples. It is also in the Wiki tutorials in detail. 
 
-1) first install and load the R package. Its a good idea to install new (or check) every time as this package is being updated frequently. Functions may also be modified and stop working, so check back here for updated tutorial instructions. 
+1) first install and load the R package. Its a good idea to install new (or check) every time as this package is being updated and bugs fixed frequently. The devtools package is required to install R packages from GitHub, so devtools is required.  
 
 ```r
+install.packages("devtools", dependencies = TRUE) #if not already installed
 devtools::install_github("chutter/PhyloConfigR")
 library(PhyloConfigR)
 
 ```
 
-2) You will want a character variable that includes your full path to the astral and iqtree jar files. NOTE: if you move the astral jar file, you will need to move the lib/ directory along with it, as astral depends on it. 
-
-
-```r
-astral.path = "/usr/local/bin/Astral-5-14/astral.5.14.2.jar"
-iqtree.path = "/usr/local/bin/IQTREE/bin/iqtree2"
-bpp.path = "/usr/local/bin/BPP/bin/bpp"
-
-```
-
-3)Setup your working directory and create if necessary
-
-```r
-work.dir = "/Test_FilterZone"
-dir.create(work.dir)
-setwd(work.dir)
-```
 
 
