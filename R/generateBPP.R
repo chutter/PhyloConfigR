@@ -1,52 +1,54 @@
 #' @title generateBPP
 #'
-#' @description Function for batch trimming a folder of alignments, with the various trimming functions available to select from
+#' @description Function for generating BPP input alignment and IMAP files.
 #'
-#' @param assembly.directory path to a folder of sequence alignments in phylip format.
+#' @param alignment.directory path to a folder of sequence alignments in phylip format.
 #'
-#' @param target.file available input alignment formats: fasta or phylip
+#' @param tree.file a tree file that can be read by the ape R package function read.tree
 #'
-#' @param alignment.contig.name contigs are added into existing alignment if algorithm is "add"
+#' @param outgroups provide outgroups for rooting the tree, can use multiple like so: c("taxa_1", "taxa_2", "taxa_3)
 #'
-#' @param output.directory available output formats: phylip
+#' @param output.name name for output files
 #'
-#' @param min.percent.id algorithm to use: "add" add sequences with "add.contigs"; "localpair" for local pair align. All others available
+#' @param population.file "provided" if you already have a population file and do not need one created. "letter" if you want to create a population file for each sample is a population and given a 3 letter code. "sample" if you want to have the population named after each sample.
 #'
-#' @param min.match.length TRUE applies the adjust sequence direction function of MAFFT
+#' @param overwrite if TRUE overwrites previous runs of the function
 #'
-#' @param min.match.coverage if a file name is provided, save.name will be used to save aligment to file as a fasta
-#'
-#' @param threads path to a folder of sequence alignments in phylip format.
-#'
-#' @param memory give a save name if you wnat to save the summary to file.
-#'
-#' @param trim.target TRUE to supress mafft screen output
-#'
-#' @param overwrite path to a folder of sequence alignments in phylip format.
-#'
-#' @param resume contigs are added into existing alignment if algorithm is "add"
-#'
-#' @param quiet algorithm to use: "add" add sequences with "add.contigs"; "localpair" for local pair align. All others available
-#'
-#' @param blast.path algorithm to use: "add" add sequences with "add.contigs"; "localpair" for local pair align. All others available
-#'
-#' @param bbmap.path algorithm to use: "add" add sequences with "add.contigs"; "localpair" for local pair align. All others available
-#'
-#' @return an alignment of provided sequences in DNAStringSet format. Also can save alignment as a file with save.name
+#' @return a single BPP formatted concatenated alignment and optionally an IMAP file
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
+#'Situation 1. Population file provided so an IMAP file is not created.
 #'
+#'generateBPP(alignment.directory = directory/to/alignments,
+#'            tree.file = path/to/tree/file,
+#'            outgroups = c("taxa_1"),
+#'            output.name = "bpp-alignment",
+#'            population.file = "provided",
+#'            overwrite = FALSE)
+#'
+#'Situation 2. No population file, name each population with the sample name. The sample and population name will be the same in the IMAP.
+#'
+#'generateBPP(alignment.directory = directory/to/alignments,
+#'            tree.file = path/to/tree/file,
+#'            outgroups = c("taxa_1", "taxa_2"),
+#'            output.name = "bpp-alignment",
+#'            population.file = "sample",
+#'            overwrite = FALSE)
+#'
+#'Situation 3. No population file, each sample is a single population. Each sample is named with a 3 letter long random letter code to match the population IMAP file.
+#'
+#'generateBPP(alignment.directory = directory/to/alignments,
+#'            tree.file = path/to/tree/file,
+#'            outgroups = c("taxa_1", "taxa_2", "taxa_3"),
+#'            output.name = "bpp-alignment",
+#'            population.file = "letter",
+#'            overwrite = FALSE)
 #'
 #' @export
 
 generateBPP = function(alignment.directory = NULL,
                        tree.file = NULL,
-                       population.file = NULL,
                        outgroups = NULL,
                        output.name = "bpp-alignment",
                        population.file = c("letter", "sample", "provided"),
