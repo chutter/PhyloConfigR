@@ -69,7 +69,7 @@ summarizeAlignments = function(alignment.path = NULL,
   collect.data = data.table::data.table(matrix(as.numeric(0),
                                    nrow = length(align.names),
                                    ncol = length(header.data)))
-  setnames(collect.data, header.data)
+  data.table::setnames(collect.data, header.data)
   collect.data[, file:=as.character(file)]
   collect.data[, dataset:=as.character(dataset)]
 
@@ -87,17 +87,17 @@ summarizeAlignments = function(alignment.path = NULL,
     }
 
     #Collect data
-    set(collect.data, i = as.integer(x), j = match("dataset", header.data), value = dataset.name )
-    set(collect.data, i = as.integer(x), j = match("file", header.data), value = align.names[x] )
+    data.table::set(collect.data, i = as.integer(x), j = match("dataset", header.data), value = dataset.name )
+    data.table::set(collect.data, i = as.integer(x), j = match("file", header.data), value = align.names[x] )
     #Sample data
-    set(collect.data, i = as.integer(x), j = match("number_samples", header.data), value = nrow(align) )
+    data.table::set(collect.data, i = as.integer(x), j = match("number_samples", header.data), value = nrow(align) )
     #Length data
-    set(collect.data, i = as.integer(x), j = match("alignment_length", header.data), value = ncol(align) )
+    data.table::set(collect.data, i = as.integer(x), j = match("alignment_length", header.data), value = ncol(align) )
 
     count.pis = informativeSites(align, count = T, ambiguities = T)
     prop.pis = round(count.pis/ncol(align),3)
-    set(collect.data, i = as.integer(x), j = match("count_pis", header.data), value = count.pis)
-    set(collect.data, i = as.integer(x), j = match("proportion_pis", header.data), value = prop.pis)
+    data.table::set(collect.data, i = as.integer(x), j = match("count_pis", header.data), value = count.pis)
+    data.table::set(collect.data, i = as.integer(x), j = match("proportion_pis", header.data), value = prop.pis)
 
     #Removes samples that too short individually
     len.temp = as.character(as.list(align))
@@ -109,8 +109,8 @@ summarizeAlignments = function(alignment.path = NULL,
     miss.prop = round(sum(miss.total)/(max(spp.len)*nrow(align)), 3)
 
     #Get missing bp data
-    set(collect.data, i = as.integer(x), j = match("count_missing_bp", header.data), value =  sum(miss.total) )
-    set(collect.data, i = as.integer(x), j = match("proportion_missing_bp", header.data), value = miss.prop )
+    data.table::set(collect.data, i = as.integer(x), j = match("count_missing_bp", header.data), value =  sum(miss.total) )
+    data.table::set(collect.data, i = as.integer(x), j = match("proportion_missing_bp", header.data), value = miss.prop )
 
   } #x loop
 
