@@ -31,11 +31,11 @@ summarizeAlignments = function(alignment.path = NULL,
                                dataset.name = NULL,
                                alignment.format = c("phylip", "nexus")) {
 
-  # alignment.path = dataset.align
-  # dataset.name = datasets[i]
-  # file.export = datasets[i]
-  # alignment.type = "nexus"
-  # overwrite = FALSE
+  #alignment.path = "/Volumes/LaCie/Anax/data-analysis/alignments/untrimmed_all-markers"
+  #dataset.name = "test"
+  #file.export = "test.csv"
+  #alignment.format = "phylip"
+  #overwrite = FALSE
 
   if(is.null(alignment.path) == TRUE){ stop("Error: no alignment path provided.") }
   if(is.null(dataset.name) == TRUE){ stop("Error: a dataset name is needed.") }
@@ -94,7 +94,7 @@ summarizeAlignments = function(alignment.path = NULL,
     #Length data
     data.table::set(collect.data, i = as.integer(x), j = match("alignment_length", header.data), value = ncol(align) )
 
-    count.pis = informativeSites(align, count = T, ambiguities = T)
+    count.pis = PhyloConfigR::informativeSites(align, count = T, ambiguities = T)
     prop.pis = round(count.pis/ncol(align),3)
     data.table::set(collect.data, i = as.integer(x), j = match("count_pis", header.data), value = count.pis)
     data.table::set(collect.data, i = as.integer(x), j = match("proportion_pis", header.data), value = prop.pis)
