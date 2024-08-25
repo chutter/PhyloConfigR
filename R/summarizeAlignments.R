@@ -39,6 +39,7 @@ summarizeAlignments = function(alignment.path = NULL,
 
   require(data.table)
   #' @importFrom data.table ":="
+
   if(is.null(alignment.path) == TRUE){ stop("Error: no alignment path provided.") }
   if(is.null(dataset.name) == TRUE){ stop("Error: a dataset name is needed.") }
 
