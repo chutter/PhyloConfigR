@@ -150,9 +150,12 @@ analysis.concatenationTree = function(alignment.file = NULL,
   iqtree.args = c("-s", run.alignment,
                   "-pre", file.path(run.dir, output.name),
                   "-nt", threads,
-                  "-mem", paste0(memory, "G"),
-                  "-msub", msub.type)
+                  "-mem", paste0(memory, "G"))
 
+  #-msub restricts ModelFinder's amino-acid model set, so it only means anything
+  #when ModelFinder runs. With an explicit model (partition.scheme = "none") it
+  #is a no-op on IQ-TREE 2 and some IQ-TREE builds reject it with a sequence-type
+  #error, so add it only for the ModelFinder schemes.
   if (partition.scheme == "none"){
     iqtree.args = c(iqtree.args, "-m", model)
   } else {
@@ -162,7 +165,7 @@ analysis.concatenationTree = function(alignment.file = NULL,
       iqtree.args = c(iqtree.args, "-rcluster", rcluster)
     }
     if (partition.scheme == "file"){ iqtree.args = c(iqtree.args, "-spp", partition.file) }
-    iqtree.args = c(iqtree.args, "-m", part.scheme)
+    iqtree.args = c(iqtree.args, "-m", part.scheme, "-msub", msub.type)
   }
 
   #uf.bootstrap = 0 leaves -bb off entirely. IQ-TREE rejects -bb below 1000, so

@@ -1,3 +1,15 @@
+# PhyloConfigR 0.3.1
+
+## Fixes
+
+* `analysis.concatenationTree()` no longer passes `-msub` on unpartitioned runs
+  (`partition.scheme = "none"`). `-msub` only restricts ModelFinder's amino-acid
+  model set, so it has no effect when an explicit model is given, and some
+  IQ-TREE builds reject the flag in that context with `ERROR: Unknown sequence
+  type` (exit status 2), which made every replicate of a gene jackknife fail at
+  IQ-TREE launch. It is now added only for the ModelFinder schemes ("merge",
+  "file").
+
 # PhyloConfigR 0.3.0
 
 Adds a gene jackknife.

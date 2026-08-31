@@ -1,6 +1,6 @@
 Package: PhyloConfigR
 Title: Configure Inputs and Outputs for Phylogenetic Software
-Version: 0.3.0
+Version: 0.3.1
 Authors@R:
     person(given = "Carl",
            family = "Hutter",
