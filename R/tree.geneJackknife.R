@@ -60,6 +60,12 @@
 #'
 #' @param codon.partition if TRUE adds -st CODON for codon-aware models
 #'
+#' @param seq.type data type forced with IQ-TREE's -st, "DNA" by default because
+#'   a gene jackknife on nucleotide alignments is DNA. Forcing it avoids the
+#'   "Unknown sequence type" failure some IQ-TREE builds hit when auto-detecting
+#'   matrices with heavy missing data. Set NULL to let IQ-TREE auto-detect
+#'   (default: "DNA")
+#'
 #' @param rcluster percent of partitions used by rcluster when
 #'   partition.scheme = "merge"
 #'
@@ -133,6 +139,7 @@ analysis.geneJackknife = function(alignment.path = NULL,
                                   model = "GTR",
                                   msub.type = c("nuclear", "mitochondrial"),
                                   codon.partition = FALSE,
+                                  seq.type = "DNA",
                                   rcluster = 100,
                                   threads = 1,
                                   memory = 1,
@@ -327,6 +334,7 @@ analysis.geneJackknife = function(alignment.path = NULL,
                                              model = model,
                                              msub.type = msub.type,
                                              codon.partition = codon.partition,
+                                             seq.type = seq.type,
                                              rcluster = rcluster,
                                              uf.bootstrap = 0,
                                              threads = threads,

@@ -24,6 +24,11 @@
 #'
 #' @param codon.partition if TRUE adds -st CODON flag for codon-aware model
 #'
+#' @param seq.type force the data type passed to IQ-TREE with -st (e.g. "DNA",
+#'   "AA", "CODON"); NULL lets IQ-TREE auto-detect. Forcing the type avoids the
+#'   "Unknown sequence type" failure some IQ-TREE builds hit when auto-detecting
+#'   matrices with a lot of missing data (default: NULL)
+#'
 #' @param program reserved for future use; currently only "IQTREE" is supported
 #'
 #' @param msub.type substitution model category passed to IQ-TREE -msub flag;
@@ -81,6 +86,7 @@ analysis.concatenationTree = function(alignment.file = NULL,
                              partition.scheme = c("file", "merge", "none"),
                              model = "GTR",
                              codon.partition = FALSE,
+                             seq.type = NULL,
                              program = "IQTREE",
                              msub.type = c("nuclear", "mitochondrial"),
                              uf.bootstrap = 1000,
@@ -171,7 +177,15 @@ analysis.concatenationTree = function(alignment.file = NULL,
   #uf.bootstrap = 0 leaves -bb off entirely. IQ-TREE rejects -bb below 1000, so
   #passing a small number here used to make the run fail rather than run faster.
   if (uf.bootstrap > 0){ iqtree.args = c(iqtree.args, "-bb", as.integer(uf.bootstrap)) }
-  if (codon.partition == TRUE){ iqtree.args = c(iqtree.args, "-st", "CODON") }
+
+  #Sequence type. seq.type forces the data type with -st instead of leaving it to
+  #IQ-TREE's auto-detection, which some builds fail with "Unknown sequence type"
+  #on matrices carrying a lot of missing data. codon.partition is kept as a
+  #shortcut for -st CODON. If both are given, seq.type wins.
+  st.value = seq.type
+  if (codon.partition == TRUE && is.null(st.value)){ st.value = "CODON" }
+  if (is.null(st.value) == FALSE && nzchar(st.value)){ iqtree.args = c(iqtree.args, "-st", st.value) }
+
   if (is.null(seed) == FALSE){ iqtree.args = c(iqtree.args, "-seed", as.integer(seed)) }
   if (quiet == TRUE){ iqtree.args = c(iqtree.args, "-quiet") }
   if (resume == FALSE){ iqtree.args = c(iqtree.args, "-redo") }

@@ -10,6 +10,14 @@
   IQ-TREE launch. It is now added only for the ModelFinder schemes ("merge",
   "file").
 
+* `analysis.concatenationTree()` gained a `seq.type` argument that forces the
+  IQ-TREE data type with `-st`, and `analysis.geneJackknife()` now sets it to
+  `"DNA"` by default. Some IQ-TREE builds fail auto-detection with `ERROR:
+  Unknown sequence type` on replicate matrices that carry a lot of missing data;
+  forcing the type is deterministic and, if a locus were genuinely not DNA,
+  reports the offending site instead of the opaque error. Set `seq.type = NULL`
+  to auto-detect.
+
 * `analysis.geneJackknife()` now removes each replicate's concatenated matrix
   even when the replicate fails, not only on success. The matrix is built just
   before its tree and deleted in a `finally` block, so only the replicates in
