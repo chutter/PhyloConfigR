@@ -10,6 +10,12 @@
   IQ-TREE launch. It is now added only for the ModelFinder schemes ("merge",
   "file").
 
+* `analysis.geneJackknife()` now removes each replicate's concatenated matrix
+  even when the replicate fails, not only on success. The matrix is built just
+  before its tree and deleted in a `finally` block, so only the replicates in
+  flight occupy disk and an aborted run no longer leaves a directory full of
+  matrices behind.
+
 # PhyloConfigR 0.3.0
 
 Adds a gene jackknife.

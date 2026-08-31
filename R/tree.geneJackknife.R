@@ -286,64 +286,73 @@ analysis.geneJackknife = function(alignment.path = NULL,
     }
     writeLines(picked.loci, file.path(picks.dir, paste0(rep.tag, "_loci.txt")))
 
-    #concatenateAlignments does not create its output folder, so make it first.
-    #Samples absent from a locus are filled with Ns, which is what makes matrices
-    #from different draws comparable.
+    #The matrix is built here, just before its tree, and removed right after in
+    #the finally block. So only the replicates in flight ever occupy disk, never
+    #all of them at once, and an aborted run (a failed IQ-TREE, a killed job)
+    #does not leave a directory full of matrices behind. keep.matrices = TRUE
+    #suppresses the removal.
     work.dir = file.path(output.directory, "work", rep.tag)
     dir.create(work.dir, recursive = TRUE, showWarnings = FALSE)
 
-    concatenateAlignments(alignment.path = alignment.path,
-                          alignment.names = picked.loci,
-                          file.name = rep.tag,
-                          output.dir = work.dir,
-                          partition.format = "none")
+    tryCatch({
 
-    matrix.file = file.path(work.dir, paste0(rep.tag, ".phy"))
-    if (file.exists(matrix.file) == FALSE || file.size(matrix.file) == 0){
-      stop("concatenateAlignments produced no matrix at ", matrix.file)
-    }
+      #concatenateAlignments does not create its output folder, so it is made
+      #above. Samples absent from a locus are filled with Ns, which is what makes
+      #matrices from different draws comparable.
+      concatenateAlignments(alignment.path = alignment.path,
+                            alignment.names = picked.loci,
+                            file.name = rep.tag,
+                            output.dir = work.dir,
+                            partition.format = "none")
 
-    #A sample present at none of the drawn loci is simply absent from the matrix,
-    #so a replicate can carry fewer than the full set of taxa. That is expected
-    #at small targets; recorded here so it shows in the run log.
-    header = suppressWarnings(as.integer(strsplit(trimws(readLines(matrix.file, n = 1)), "\\s+")[[1]]))
-    n.taxa = header[1]
-    n.sites = header[2]
-    if (quiet == FALSE){ cat(sprintf("%s: matrix %d taxa x %d sites\n", rep.tag, n.taxa, n.sites)) }
+      matrix.file = file.path(work.dir, paste0(rep.tag, ".phy"))
+      if (file.exists(matrix.file) == FALSE || file.size(matrix.file) == 0){
+        stop("concatenateAlignments produced no matrix at ", matrix.file)
+      }
 
-    #uf.bootstrap = 0: the jackknife is the replication, a per-replicate bootstrap
-    #would only add runtime. seed + rep gives IQ-TREE its own reproducible seed.
-    tree.file = analysis.concatenationTree(alignment.file = matrix.file,
-                                           output.directory = file.path(work.dir, "tree"),
-                                           output.name = rep.tag,
-                                           partition.scheme = partition.scheme,
-                                           model = model,
-                                           msub.type = msub.type,
-                                           codon.partition = codon.partition,
-                                           rcluster = rcluster,
-                                           uf.bootstrap = 0,
-                                           threads = threads,
-                                           memory = memory,
-                                           iqtree.path = iqtree.path,
-                                           seed = seed + rep,
-                                           quiet = quiet,
-                                           resume = resume)
+      #A sample present at none of the drawn loci is simply absent from the
+      #matrix, so a replicate can carry fewer than the full set of taxa. That is
+      #expected at small targets; recorded here so it shows in the run log.
+      header = suppressWarnings(as.integer(strsplit(trimws(readLines(matrix.file, n = 1)), "\\s+")[[1]]))
+      n.taxa = header[1]
+      n.sites = header[2]
+      if (quiet == FALSE){ cat(sprintf("%s: matrix %d taxa x %d sites\n", rep.tag, n.taxa, n.sites)) }
 
-    file.copy(tree.file, tree.out, overwrite = TRUE)
+      #uf.bootstrap = 0: the jackknife is the replication, a per-replicate
+      #bootstrap would only add runtime. seed + rep gives IQ-TREE its own seed.
+      tree.file = analysis.concatenationTree(alignment.file = matrix.file,
+                                             output.directory = file.path(work.dir, "tree"),
+                                             output.name = rep.tag,
+                                             partition.scheme = partition.scheme,
+                                             model = model,
+                                             msub.type = msub.type,
+                                             codon.partition = codon.partition,
+                                             rcluster = rcluster,
+                                             uf.bootstrap = 0,
+                                             threads = threads,
+                                             memory = memory,
+                                             iqtree.path = iqtree.path,
+                                             seed = seed + rep,
+                                             quiet = quiet,
+                                             resume = resume)
 
-    write.table(data.frame(replicate = rep,
-                           n_loci = length(picked.loci),
-                           bp = picked.bp,
-                           n_taxa = n.taxa,
-                           n_sites = n.sites,
-                           model = model),
-                file = file.path(picks.dir, paste0(rep.tag, "_summary.tsv")),
-                sep = "\t", row.names = FALSE, quote = FALSE)
+      file.copy(tree.file, tree.out, overwrite = TRUE)
 
-    if (keep.matrices == FALSE){ unlink(work.dir, recursive = TRUE) }
+      write.table(data.frame(replicate = rep,
+                             n_loci = length(picked.loci),
+                             bp = picked.bp,
+                             n_taxa = n.taxa,
+                             n_sites = n.sites,
+                             model = model),
+                  file = file.path(picks.dir, paste0(rep.tag, "_summary.tsv")),
+                  sep = "\t", row.names = FALSE, quote = FALSE)
 
-    written = c(written, tree.out)
-    print(paste0(rep.tag, " done -> ", tree.out))
+      written = c(written, tree.out)
+      print(paste0(rep.tag, " done -> ", tree.out))
+
+    }, finally = {
+      if (keep.matrices == FALSE){ unlink(work.dir, recursive = TRUE) }
+    })
 
   }#end rep loop
 
