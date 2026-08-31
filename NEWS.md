@@ -1,3 +1,21 @@
+# PhyloConfigR 0.3.0
+
+Adds a gene jackknife.
+
+## New
+
+* `analysis.geneJackknife()` runs a gene jackknife on a folder of locus
+  alignments. Each replicate draws loci at random without replacement to a fixed
+  size (a number of base pairs or a number of genes), concatenates them with
+  `concatenateAlignments()`, and estimates a tree with
+  `analysis.concatenationTree()` with UFBoot off, because the resampling is the
+  replication. It builds a majority-rule consensus from the replicate trees, or
+  can be pointed at a single index with `replicate.subset` so a cluster array
+  runs one replicate per task. Replicate `i` is seeded from `seed + i`, so the
+  result does not depend on the order the tasks run and any replicate reproduces
+  on its own. An optional `locus.lengths` table skips re-reading the alignments
+  on every task.
+
 # PhyloConfigR 0.2.1
 
 Fixes to IQ-TREE handling. All four affected functions previously assumed the
