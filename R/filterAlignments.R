@@ -14,15 +14,20 @@
 #'
 #' @param overwrite if TRUE overwrites file if it exists; FALSE the dataset is skipped
 #'
-#' @return filters the alignments
+#' @return for each row in filter.summary that passes the minimum alignment
+#'   count threshold, a concatenated phylip file is written to
+#'   "filtered-alignments-concatenated/" and/or individual alignment files are
+#'   copied to "filtered-alignments/"; nothing is returned in R
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' filterAlignments(filter.summary = filt.summary,
+#'                  alignment.data = align.summary,
+#'                  alignment.folder = "alignments",
+#'                  format = "concatenated",
+#'                  min.alignments = 10,
+#'                  min.n.samples = 4,
+#'                  overwrite = FALSE)
 #'
 #' @export
 

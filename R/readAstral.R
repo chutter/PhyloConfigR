@@ -1,22 +1,24 @@
 #' @title readAstral
 #'
-#' @description Function for writing alignments in R to phylip format
+#' @description Reads an ASTRAL-III output tree file into an ape phylo object,
+#'   optionally rooting the tree with provided outgroups. Node labels containing
+#'   ASTRAL statistics are parsed and the tree is returned with numeric node labels.
 #'
-#' @param astral.tree phylogenetic tree from ape read.tree
+#' @param astral.tree path to an ASTRAL-III output tree file
 #'
-#' @param outgroups a vector of outgroups to root the tree
+#' @param outgroups character vector of outgroup taxon names used to root the tree.
+#'   If NULL the tree is returned unrooted.
 #'
-#' @param tip.length arbitrary value for the terminal tip lengths, Astral does not compute this
+#' @param tip.length numeric value assigned to terminal branch lengths, since
+#'   ASTRAL does not estimate tip lengths (default: 1)
 #'
-#' @return saves the alignment as a phylip file
+#' @return a rooted ape phylo object with node labels replaced by internal node numbers
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' your.tree = readAstral(astral.tree = "path/to/astral_output.tre",
+#'                        outgroups = c("species_one", "species_two"),
+#'                        tip.length = 1)
 #'
 #' @export
 

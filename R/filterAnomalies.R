@@ -8,15 +8,14 @@
 #'
 #' @param filter.data your master filtered dataset summary stats
 #'
-#' @return a data.table of anomaly zone data calculated for all nodes in your tree
+#' @return a data.table combining filter summary rows with anomaly zone
+#'   calculations for each node across all filtered ASTRAL trees
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' anomaly.data = filterAnomalies(astral.directory = "filtered-astral",
+#'                                outgroups = c("outgroup_sp"),
+#'                                filter.data = filt.summary)
 #'
 #' @export
 
@@ -42,7 +41,7 @@ filterAnomalies = function(astral.directory = NULL,
   for (x in 1:length(astral.files)){
     #Read in tree
 
-    filt.tree = AstralPlane::readAstral(astral.tree = paste0(astral.directory, "/", astral.files[x]),
+    filt.tree = PhyloConfigR::readAstral(astral.tree = paste0(astral.directory, "/", astral.files[x]),
                                         outgroups = outgroups,
                                         tip.length = 1)
 

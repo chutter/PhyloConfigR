@@ -1,27 +1,58 @@
 #' @title analysis.concatenationTree
 #'
-#' @description Function for concatenating a large number of alignments
+#' @description Runs IQ-TREE 2 on a concatenated alignment to estimate a
+#'   maximum-likelihood species tree. Supports MFP model selection with optional
+#'   partition merging, codon partitioning, and UFBoot branch support. The
+#'   alignment is copied into a per-run subdirectory inside output.directory.
 #'
-#' @param alignment.folder folder that contains aligmnents to be concatenated
+#' @param alignment.file path to the concatenated alignment file in phylip format
 #'
-#' @param output.name output file name
+#' @param output.directory path to the parent output directory
 #'
-#' @param partition.file TRUE to save a partition file
+#' @param output.name name for the run subdirectory and output files
 #'
-#' @param output.format output file format. "all" to save all three types phylip, nexus, and fasta
+#' @param partition.file path to a partition file (only used when
+#'   partition.scheme = "file")
 #'
-#' @param partition.format partition file format. "all" to save both raxml and table format
+#' @param partition.scheme how to handle partitions: "file" uses a provided
+#'   partition file; "merge" uses MFP+MERGE to find optimal merging;
+#'   "none" fits a single GTR model
 #'
-#' @param overwrite TRUE to overwrite file. Default FALSE.
+#' @param codon.partition if TRUE adds -st CODON flag for codon-aware model
+#'   fitting (requires in-frame codon alignment)
 #'
-#' @return saves to file concatenated alignments and partition files delimiting the coordinates of each indidividual marker
+#' @param program reserved for future use; currently only "IQTREE" is supported
+#'
+#' @param msub.type substitution model category passed to IQ-TREE -msub flag;
+#'   "nuclear" or "mitochondrial"
+#'
+#' @param uf.bootstrap number of ultrafast bootstrap replicates (default: 100)
+#'
+#' @param rcluster percentage of partitions used in the rcluster algorithm for
+#'   partition model selection (default: 100)
+#'
+#' @param threads number of CPU threads passed to IQ-TREE -nt flag
+#'
+#' @param memory memory in GB (currently informational)
+#'
+#' @param iqtree.path path to the directory containing the iqtree2 executable,
+#'   or NULL if iqtree2 is on the system PATH
+#'
+#' @param resume if TRUE allows IQ-TREE to resume an interrupted run
+#'
+#' @param overwrite if TRUE removes the existing output directory before running
+#'
+#' @return IQ-TREE output files are written to output.directory/output.name/;
+#'   nothing is returned in R
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
+#' analysis.concatenationTree(alignment.file = "concat_alignment.phy",
+#'                             output.directory = "concat-trees",
+#'                             output.name = "all-markers",
+#'                             partition.scheme = "merge",
+#'                             uf.bootstrap = 1000,
+#'                             threads = 4)
 #'
 #' @export
 

@@ -26,15 +26,19 @@
 #'
 #' @param min.trees minimum number of trees to keep a filtration replicate. Default: 10
 #'
-#' @return plots a dot plot of each filter and the concordance factors for the focal node. Monophyly of that node is also shown.
+#' @return PDF plots are written to output.dir; nothing is returned in R. Each
+#'   plot shows CF values on the y-axis, filter value on the x-axis, with point
+#'   color indicating anomaly zone status and point shape indicating monophyly.
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' plot.filterNode(anomaly.zone.data = anomaly.data,
+#'                 concordance.factors.data = concord.data,
+#'                 focal.node = "clade_A",
+#'                 filter.name = "alignment_length",
+#'                 dataset.name = "exons",
+#'                 save.plots = TRUE,
+#'                 output.dir = "Filter-Plots")
 #'
 #' @export
 
@@ -119,22 +123,22 @@ plot.filterNode = function(anomaly.zone.data = NULL,
   for (x in 1:length(dataset.names)){
     red.data = sub.data[sub.data$align_dataset %in% dataset.names[x],]
 
+    plot.data = data.frame()
     if (plot.gcf == TRUE){
-      plot.data = data.frame(Type = "gCF",
+      plot.data = rbind(plot.data, data.frame(Type = "gCF",
                              CF = red.data$gCF,
                              Trees = red.data$no_trees,
                              Filter = red.data$final_filter,
                              AZ = red.data$anomaly_zone,
-                             M = red.data$monophyletic)
+                             M = red.data$monophyletic))
     }
     if (plot.scf == TRUE){
-      plot.data1 = data.frame(Type = "sCF",
+      plot.data = rbind(plot.data, data.frame(Type = "sCF",
                               CF = red.data$sCF,
                               Trees = red.data$no_trees,
                               Filter = red.data$final_filter,
                               AZ = red.data$anomaly_zone,
-                              M = red.data$monophyletic)
-      plot.data = rbind(plot.data, plot.data1)
+                              M = red.data$monophyletic))
     }
 
     #plot.data = rbind(plot1.data, plot2.data)

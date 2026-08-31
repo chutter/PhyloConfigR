@@ -69,7 +69,9 @@ setupAstral = function(genetree.folder = NULL,
   }#end file check
 
   #Gets list of gene trees
-  gene.trees = list.files(genetree.folder)
+  gene.trees = list.files(genetree.folder,
+                          pattern = "\\.(treefile|tre|tree|nwk|newick)$",
+                          ignore.case = TRUE)
 
   #Obtains total number of samples
   if (is.null(min.sample.prop) != TRUE){
@@ -115,7 +117,7 @@ setupAstral = function(genetree.folder = NULL,
       if (length(temp.tree$node.label) != 0){
         #Find and collapse nodes with bl close to 0 from above
         temp.tree$node.label[temp.tree$node.label == ""] = "100"
-        new.tree = AstralPlane::makePolytomy(tree = temp.tree, polytomy.limit = polytomy.limit)
+        new.tree = PhyloConfigR::makePolytomy(tree = temp.tree, polytomy.limit = polytomy.limit)
       } else {
         new.tree = temp.tree
       }#end else
@@ -130,5 +132,4 @@ setupAstral = function(genetree.folder = NULL,
                " gene trees to file: ", output.name, "_genetrees.tre"))
 
 }#end setupAstral function
-
 

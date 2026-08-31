@@ -1,23 +1,35 @@
 #' @title concatenateAlignments
 #'
-#' @description Function for concatenating a large number of alignments
+#' @description Concatenates a set of individual phylip-format alignments into a
+#'   single multi-locus alignment. Samples missing from individual alignments are
+#'   filled with Ns. Optionally writes RAxML-format and/or table-format partition
+#'   files recording the start/end coordinates of each locus.
 #'
-#' @param alignment.folder folder that contains aligmnents to be concatenated
+#' @param alignment.path path to the folder containing the individual alignments
 #'
-#' @param file.name output file name
+#' @param alignment.names character vector of file names within alignment.path to
+#'   include (allows subsetting to a filtered marker list)
 #'
-#' @param output.dir directory to save file to
+#' @param file.name base name for the output phylip file (no extension)
 #'
-#' @param partition.format partition file format. Can select both.
+#' @param output.dir directory in which to save the concatenated alignment and
+#'   partition files
 #'
-#' @return saves to file concatenated alignments and partition files delimiting the coordinates of each indidividual marker
+#' @param partition.format character vector of partition file formats to write:
+#'   "raxml" for RAxML-format, "table" for a tab-delimited table, or "none"
+#'   to skip partition output
+#'
+#' @return writes output.dir/file.name.phy and optionally
+#'   output.dir/file.name_partitions_raxml.txt and/or
+#'   output.dir/file.name_partitions_table.txt; nothing is returned in R
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
+#' concatenateAlignments(alignment.path = "path/to/alignments",
+#'                       alignment.names = list.files("path/to/alignments"),
+#'                       file.name = "my_concat",
+#'                       output.dir = "concatenated",
+#'                       partition.format = c("raxml", "table"))
 #'
 #' @export
 

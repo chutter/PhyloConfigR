@@ -4,14 +4,13 @@
 #'
 #' @param file.name  file name of the .cf.stat file excluding ".cf.stat"
 #'
-#' @return a data.frame with the concordance factor data
+#' @return a data.frame with one row per node containing: Dataset, node, gCF,
+#'   gCF_N, gDF1, gDF1_N, gDF2, gDF2_N, gDFP, gDFP_N, gN, sCF, sCF_N, sDF1,
+#'   sDF1_N, sDF2, sDF2_N, sN, Label, Length
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
+#' cf.data = readConcordance(file.name = "concordance-factors/dataset1")
 #'
 #' @export
 

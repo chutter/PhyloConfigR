@@ -1,26 +1,33 @@
 #' @title summarizeAlignments
 #'
-#' @description Function for gather summary statistics on your alignment. Can be used for filtering or summarizing data.
+#' @description Calculates per-alignment summary statistics (number of samples,
+#'   proportion of maximum sampling, alignment length, count and proportion of
+#'   parsimony informative sites, and missing data) across a folder of alignments.
+#'   Results are returned as a data.table and optionally saved as a CSV.
 #'
-#' @param alignment.path path to a folder of sequence alignments in phylip format.
+#' @param alignment.path path to a folder of alignment files
 #'
-#' @param file.export give a save name if you wnat to save the summary to file.
+#' @param file.export base file name (without extension) for saving the CSV
+#'   summary; if NULL the summary is only returned in R
 #'
-#' @param overwrite if TRUE overwrites file if it exists; FALSE the dataset is skipped
+#' @param overwrite if TRUE overwrites an existing CSV; if FALSE and the file
+#'   exists, the existing file is loaded and returned
 #'
-#' @param dataset.name A name for your dataset. i.e. exons, introns, UCEs
+#' @param dataset.name a label for the dataset (e.g. "exons", "UCEs") stored
+#'   in the "dataset" column of the output table
 #'
-#' @param alignment.type select the format of the alignment. Phylip is avaialble for now, will be expanded in the future.
+#' @param alignment.format format of the input alignments: "phylip" or "nexus"
 #'
-#' @return returns a data.table with the raw summary statistics calculated for each alignment in the alignment.path. A csv file can optionally be saved by giving a file name to file.export
+#' @return a data.table with one row per alignment containing: dataset, file,
+#'   number_samples, proportion_samples, alignment_length, count_pis,
+#'   proportion_pis, count_missing_bp, proportion_missing_bp
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' align.summary = summarizeAlignments(alignment.path = "path/to/alignments",
+#'                                     dataset.name = "exons",
+#'                                     file.export = "alignment_summary",
+#'                                     alignment.format = "phylip")
 #'
 #' @export
 
@@ -37,8 +44,6 @@ summarizeAlignments = function(alignment.path = NULL,
   #alignment.format = "phylip"
   #overwrite = FALSE
 
-  require(data.table)
-  #' @importFrom data.table ":="
   if(is.null(alignment.path) == TRUE){ stop("Error: no alignment path provided.") }
   if(is.null(dataset.name) == TRUE){ stop("Error: a dataset name is needed.") }
 

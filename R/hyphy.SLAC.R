@@ -1,32 +1,42 @@
 #' @title hyphy.SLAC
 #'
-#' @description Function for batch trimming a folder of alignments, with the various trimming functions available to select from
+#' @description Runs HyPhy SLAC (Single Likelihood Ancestor Counting) for
+#'   site-by-site dN/dS estimation across a directory of matched gene tree and
+#'   alignment pairs. Trees and alignments are pruned to the same taxon set
+#'   before running. Results are written as JSON files in a subdirectory under
+#'   "hyphy/". Use hyphy.Parser(hyphy.analysis = "SLAC") to summarize outputs.
 #'
-#' @param tree.directory path to a folder of sequence alignments in phylip format.
+#' @param tree.directory path to a folder of gene tree files (one per locus)
 #'
-#' @param alignment.directory available input alignment formats: fasta or phylip
+#' @param alignment.directory path to a folder of alignment files matching the
+#'   gene trees by file name prefix
 #'
-#' @param dataset.name contigs are added into existing alignment if algorithm is "add"
+#' @param dataset.name name for the output subdirectory under "hyphy/" (default: "SLAC")
 #'
-#' @param threads path to a folder of sequence alignments in phylip format.
+#' @param threads number of CPU threads to use (passed to HyPhy)
 #'
-#' @param memory give a save name if you wnat to save the summary to file.
+#' @param memory memory in GB (currently informational; HyPhy manages its own memory)
 #'
-#' @param overwrite TRUE to supress mafft screen output
+#' @param overwrite if TRUE deletes and recreates the output directory
 #'
-#' @param resume TRUE to supress mafft screen output
+#' @param resume if TRUE skips loci already present in the output directory
 #'
-#' @param hyphy.path TRUE to supress mafft screen output
+#' @param quiet if TRUE suppresses HyPhy stdout and stderr
 #'
-#' @return an alignment of provided sequences in DNAStringSet format. Also can save alignment as a file with save.name
+#' @param hyphy.path path to the directory containing the hyphy executable,
+#'   or NULL if hyphy is already on the system PATH
+#'
+#' @return JSON result files are written to "hyphy/\{dataset.name\}/\{locus\}/SLAC-results.json";
+#'   nothing is returned in R
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' hyphy.SLAC(tree.directory = "gene-trees",
+#'            alignment.directory = "alignments",
+#'            dataset.name = "SLAC",
+#'            overwrite = FALSE,
+#'            resume = TRUE,
+#'            quiet = TRUE)
 #'
 #' @export
 
@@ -84,7 +94,9 @@ hyphy.SLAC = function(tree.directory = NULL,
   } else { dir.create(output.directory) }
 
   align.files = list.files(alignment.directory)
-  tree.files = list.files(tree.directory)
+  tree.files = list.files(tree.directory,
+                          pattern = "\\.(treefile|tre|tree|nwk|newick)$",
+                          ignore.case = TRUE)
   #meta.data = read.csv(metadata.file)
 
   #Resumes file download
@@ -155,5 +167,4 @@ hyphy.SLAC = function(tree.directory = NULL,
 
 
 }#end function
-
 

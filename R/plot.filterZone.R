@@ -26,15 +26,17 @@
 #'
 #' @param min.trees minimum number of trees to keep a filtration replicate. Default: 10
 #'
-#' @return plots a dot plot of each filter and the concordance factors for the focal node. Monophyly of that node is also shown.
+#' @return PDF plots are written to output.dir for each filter type (gCF, sCF,
+#'   pp); nothing is returned in R. Points are colored by anomaly zone count.
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' plot.filterZone(anomaly.zone.data = anomaly.data,
+#'                 concordance.factors.data = concord.data,
+#'                 dataset.name = "exons",
+#'                 save.plots = TRUE,
+#'                 output.dir = "Filter-Plots",
+#'                 min.trees = 10)
 #'
 #' @export
 
@@ -145,38 +147,37 @@ plot.filterZone = function(anomaly.zone.data = NULL,
   for (x in 1:length(data.names)){
     red.data = collect.data[collect.data$filter_name %in% data.names[x],]
 
+    plot.data = data.frame()
     if (plot.gcf == TRUE){
-      plot.data = data.frame(Type = "gCF",
+      plot.data = rbind(plot.data, data.frame(Type = "gCF",
                              dataset = red.data$dataset,
                              CF = red.data$mean_gCF,
                              PP = red.data$mean_pp,
                              Trees = red.data$no_trees,
                              Filter = red.data$filter_value,
                              Align = red.data$alignment_value,
-                             AZ = red.data$count_AZ)
+                             AZ = red.data$count_AZ))
     }
     if (plot.scf == TRUE){
-      plot.data1 = data.frame(Type = "sCF",
+      plot.data = rbind(plot.data, data.frame(Type = "sCF",
                               dataset = red.data$dataset,
                               CF = red.data$mean_sCF,
                               PP = red.data$mean_pp,
                               Trees = red.data$no_trees,
                               Filter = red.data$filter_value,
                               Align = red.data$alignment_value,
-                              AZ = red.data$count_AZ)
-      plot.data = rbind(plot.data, plot.data1)
+                              AZ = red.data$count_AZ))
     }
 
     if (plot.pp == TRUE){
-      plot.data1 = data.frame(Type = "pp",
+      plot.data = rbind(plot.data, data.frame(Type = "pp",
                               dataset = red.data$dataset,
-                              CF = red.data$mean_sCF,
+                              CF = red.data$mean_pp,
                               PP = red.data$mean_pp,
                               Trees = red.data$no_trees,
                               Filter = red.data$filter_value,
                               Align = red.data$alignment_value,
-                              AZ = red.data$count_AZ)
-      plot.data = rbind(plot.data, plot.data1)
+                              AZ = red.data$count_AZ))
     }
 
     #plot.data = rbind(plot1.data, plot2.data)

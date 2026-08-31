@@ -1,24 +1,29 @@
 #' @title writePhylip
 #'
-#' @description Function for writing alignments in R to phylip format
+#' @description Writes an alignment held as a DNAbin matrix to a phylip-format
+#'   file. Supports both interleaved and sequential layouts and an optional
+#'   strict (10-character truncation) mode.
 #'
-#' @param alignment summary data file from filterSummary
+#' @param alignment alignment object readable as a character matrix (DNAbin or matrix)
 #'
-#' @param file summary data file from alignmentSummary
+#' @param file output file path. If "" the phylip text is printed to the console.
 #'
-#' @param interleave folder of alignments to be filtered
+#' @param interleave if FALSE (default) writes sequential phylip format; if TRUE
+#'   writes interleaved blocks of the given column width
 #'
-#' @param strict save format for alignments
+#' @param strict if TRUE truncates taxon names to \code{truncate} characters
+#'   (strict phylip mode); if FALSE (default) pads names with spaces
 #'
-#' @return saves the alignment as a phylip file
+#' @param truncate maximum number of characters for taxon names when
+#'   \code{strict = TRUE} (default: 10)
+#'
+#' @return writes the alignment to \code{file} (or prints to console); returns
+#'   nothing visibly
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' align = ape::read.dna("path/to/alignment.phy", format = "sequential")
+#' writePhylip(alignment = align, file = "output.phy")
 #'
 #' @export
 
@@ -26,7 +31,8 @@
 writePhylip = function(alignment = NULL,
                        file = NULL,
                        interleave = FALSE,
-                       strict = FALSE){
+                       strict = FALSE,
+                       truncate = 10){
 
   x = as.matrix(alignment)
   #file = "test"

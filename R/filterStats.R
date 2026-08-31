@@ -8,17 +8,18 @@
 #'
 #' @param filter.values the filter values for the given scheme
 #'
-#' @param align.dataset select three colors to plot your pie.plot
+#' @param align.dataset the dataset name to embed in filter file names (e.g. "exons")
 #'
-#' @return Alignment statistics for the specific filteration scheme provided
+#' @return a data.table with one row per filter value, containing the filter
+#'   file name, filter threshold, number of passing alignments, and mean
+#'   alignment statistics at that threshold. Called internally by filterSummary.
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' stats = filterStats(data = align.summary,
+#'                     filter.name = "alignment_length",
+#'                     filter.values = c(300, 500, 1000),
+#'                     align.dataset = "exons")
 #'
 #' @export
 

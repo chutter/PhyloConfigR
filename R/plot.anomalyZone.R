@@ -16,15 +16,18 @@
 #'
 #' @param edge.width size of the branch edges, passed to edge.width in plot.phylo
 #'
-#' @return plots the phylogenetic tree and selected data associated with an AstralPlane object. Can optionally be saved to file as a PDF by giving save.file a file name.
+#' @return the phylogenetic tree is plotted with colored circles at nodes
+#'   (green = no anomaly zone, purple = anomaly zone) and matching branch
+#'   colors. Optionally saved as a PDF.
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' your.tree = ape::read.tree("path/to/species_tree.tre")
+#' az.data = anomalyZone(tree = your.tree, outgroups = c("outgroup_sp"))
+#' plot.anomalyZone(tree = your.tree,
+#'                  data = az.data,
+#'                  outgroups = c("outgroup_sp"),
+#'                  save.file = "anomaly_zone_plot.pdf")
 #'
 #' @export
 
@@ -81,7 +84,7 @@ plot.anomalyZone = function(tree = NULL,
 
   #Creates dataset for branches to be plotted
   #########################################
-  branch.no = AstralPlane::edgeLengthTable(tree, tips = TRUE)$edge
+  branch.no = PhyloConfigR::edgeLengthTable(tree, tips = TRUE)$edge
   yes.states = data[data$anomaly_zone == 1,]
   yes.states = c(yes.states$parent_branch, yes.states$child_branch)
   yes.states = yes.states[duplicated(yes.states) != T]

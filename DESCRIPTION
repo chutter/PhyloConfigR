@@ -1,21 +1,37 @@
 Package: PhyloConfigR
-Title: Package For configuring inputs and output files from various phylogenetic software
+Title: Configure Inputs and Outputs for Phylogenetic Software
 Version: 0.2.0
-Authors@R: 
+Authors@R:
     person(given = "Carl",
            family = "Hutter",
            role = c("aut", "cre"),
            email = "carl.hutter@gmail.com",
            comment = c(ORCID = "0000-0001-6381-6339"))
-Description: This R package can configure inputs and output files from various phylogenetic software
-Depends: 
-        R (>= 4.0.0),
-License: `use_gpl3_license()`
+Description: Provides functions to prepare alignments for phylogenomic analyses,
+    summarize and filter alignment datasets, estimate and filter gene trees,
+    run ASTRAL-III coalescent species tree analyses, compute and visualize
+    IQ-TREE 2 concordance factors, detect anomaly zones, prepare input files
+    for BPP and STRUCTURE, and run/parse HyPhy selection analyses (SLAC,
+    BUSTED, aBSREL, FitMG94).
+Depends:
+    R (>= 4.0.0)
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.3.2
 Imports:
-        ape (>= 5.0),
-        stringr (>= 1.4)
-        
+    ape (>= 5.0),
+    stringr (>= 1.4),
+    data.table (>= 1.14),
+    ggplot2 (>= 3.4),
+    stringi (>= 1.7),
+    jsonlite (>= 1.8),
+    Biostrings,
+    phytools,
+    seqinr
+Suggests:
+    foreach,
+    devtools,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

@@ -8,15 +8,17 @@
 #'
 #' @param print.node prints the anomaly zone nodes if found
 #'
-#' @return a data.table of anomaly zone data calculated for all nodes in your tree
+#' @return a data.table with one row per internal node pair (parent/child), with
+#'   columns: parent_node, child_node, parent_branch, child_branch,
+#'   x_branch_length, y_branch_length, a_s (anomaly threshold), anomaly_zone
+#'   (1 = in anomaly zone, 0 = not)
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' your.tree = ape::read.tree("path/to/species_tree.tre")
+#' az.data = anomalyZone(tree = your.tree,
+#'                       outgroups = c("outgroup_sp"),
+#'                       print.node = TRUE)
 #'
 #' @export
 
@@ -43,7 +45,7 @@ anomalyZone = function(tree = NULL,
     spp.tree = ape::root(spp.tree, outgroups, resolve.root = T)
   } else{ spp.tree = ape::root(spp.tree, outgroups[1], resolve.root = T) }
 
-  edge.node = AstralPlane::edgeLengthTable(spp.tree, tips = FALSE)
+  edge.node = PhyloConfigR::edgeLengthTable(spp.tree, tips = FALSE)
 
   #Gets the new tree fiels it made
   header.data = c("parent_node", "child_node", "parent_branch", "child_branch",

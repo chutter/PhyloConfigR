@@ -12,15 +12,15 @@
 #'
 #' @param to.format the format to convert the alignment to (phylip, nexus, fasta)
 #'
-#' @return saves to file a folder of alignments for the desired format
+#' @return converted alignment files are written to out.dir; nothing is returned in R
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' formatAlignmentFolder(alignment.path = "nexus-alignments",
+#'                       out.dir = "phylip-alignments",
+#'                       from.format = "nexus",
+#'                       to.format = "phylip",
+#'                       overwrite = FALSE)
 #'
 #' @export
 

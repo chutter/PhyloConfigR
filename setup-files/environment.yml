@@ -1,0 +1,28 @@
+name: PhyloConfigR
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  # Core R and essentials
+  - r-base >=4.0.0
+  - r-essentials
+  # R package dependencies
+  - r-ape >=5.0
+  - r-data.table >=1.14
+  - r-stringr >=1.4
+  - r-stringi >=1.7
+  - r-ggplot2 >=3.4
+  - r-jsonlite >=1.8
+  - r-phytools
+  - r-seqinr
+  - r-foreach
+  - r-doparallel
+  - r-devtools
+  # Bioconductor R packages
+  - bioconductor-biostrings
+  # Phylogenetic software
+  - iqtree >=2.3
+  - astral-tree
+  - openjdk >=11
+  - hyphy

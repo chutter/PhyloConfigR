@@ -8,15 +8,13 @@
 #'
 #' @param ambiguities Whether to consider ambiguities (TRUE) or not (FALSE)
 #'
-#' @return plots the phylogenetic tree and selected data associated with an AstralPlane object. Can optionally be saved to file as a PDF by giving save.file a file name.
+#' @return if count = TRUE, returns the integer count of parsimony informative
+#'   sites; if count = FALSE, returns the proportion (0-1)
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' align = ape::read.dna("path/to/alignment.phy", format = "sequential")
+#' pis_count = informativeSites(alignment = align, count = TRUE, ambiguities = TRUE)
 #'
 #' @export
 

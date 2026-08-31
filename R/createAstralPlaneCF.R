@@ -14,10 +14,9 @@
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
+#' cf.obj = createAstralPlaneCF(cf.file.name = "concordance-factors/dataset1",
+#'                               outgroups = c("species_one", "species_two"),
+#'                               tip.length = 1)
 #'
 #' @export
 

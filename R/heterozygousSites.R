@@ -1,29 +1,30 @@
 #' @title heterozygousSites
 #'
-#' @description Calculates the number or proportion of parsimony informative sites in an alignment
+#' @description Counts columns in an alignment that contain heterozygous (IUPAC
+#'   ambiguity) characters, treating each such column as a heterozygous site.
+#'   Columns with only missing data markers are not counted.
 #'
-#' @param alignment alignment in ape DNABin or a matrix format
+#' @param alignment alignment in ape DNAbin or matrix format
 #'
-#' @param count Whethe to return the count of parsimoney informative sites (TRUE) or the proportion (FALSE)
+#' @param count if TRUE (default) returns the integer count of heterozygous
+#'   sites; if FALSE returns the proportion relative to alignment length
 #'
-#' @param ambiguities Whether to consider ambiguities (TRUE) or not (FALSE)
+#' @param ambiguities if TRUE (default) IUPAC ambiguity codes (R, Y, K, M, S,
+#'   W, B, D, H, V) are treated as heterozygous; if FALSE they are excluded
 #'
-#' @return plots the phylogenetic tree and selected data associated with an AstralPlane object. Can optionally be saved to file as a PDF by giving save.file a file name.
+#' @return integer count or numeric proportion of heterozygous sites
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' align = ape::read.dna("path/to/alignment.phy", format = "sequential")
+#' het_count = heterozygousSites(alignment = align, count = TRUE, ambiguities = TRUE)
 #'
 #' @export
 
 #Calculates informative sites
 heterozygousSites = function(alignment = NULL,
                              count = TRUE,
-                             all = TRUE) {
+                             ambiguities = TRUE) {
 
   #Helper function to use with apply
   column.pars = function(x) {

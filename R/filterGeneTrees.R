@@ -26,15 +26,22 @@
 #'
 #' @param remove.node.labels strips trees of node labels if downstream analyses give you trouble (not recommended)
 #'
-#' @return filters gene trees either in a folder or concatenated set of trees
+#' @return for each row in filter.summary passing the minimum tree count,
+#'   filtered gene trees are written as a concatenated file to
+#'   "filtered-genetrees-concatenated/" or as individual files to
+#'   "filtered-genetrees-folders/"; nothing is returned in R
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' filterGeneTrees(filter.summary = filt.summary,
+#'                 alignment.data = align.summary,
+#'                 genetree.folder = "gene-trees",
+#'                 format = "concatenated",
+#'                 min.trees = 10,
+#'                 min.n.samples = 4,
+#'                 make.polytomy = TRUE,
+#'                 polytomy.limit = 10,
+#'                 overwrite = FALSE)
 #'
 #' @export
 
@@ -108,7 +115,9 @@ filterGeneTrees = function(filter.summary = NULL,
   }
 
   #Gets list of gene trees
-  gene.trees = list.files(genetree.folder)
+  gene.trees = list.files(genetree.folder,
+                          pattern = "\\.(treefile|tre|tree|nwk|newick)$",
+                          ignore.case = TRUE)
 
   if (length(gene.trees) == 0){ stop("Error: no gene trees found.") }
 
@@ -196,7 +205,7 @@ filterGeneTrees = function(filter.summary = NULL,
         } else {
           #Find and collapse nodes with bl close to 0 from above
           temp.tree$node.label[temp.tree$node.label == ""] = "100"
-          new.tree = AstralPlane::makePolytomy(tree = temp.tree, polytomy.limit = polytomy.limit)
+          new.tree = PhyloConfigR::makePolytomy(tree = temp.tree, polytomy.limit = polytomy.limit)
         }#end else
       }#make polytomy end if
 
@@ -211,7 +220,7 @@ filterGeneTrees = function(filter.summary = NULL,
       #Save foldername as dataset name
       if (length(format[format == "folder"]) == 1){
         #Writes to a separate file
-        ape::write.tree(new.tree, file = paste0("filtered-genetree-folders/",
+        ape::write.tree(new.tree, file = paste0("filtered-genetrees-folders/",
                                       temp.filter$filter_file, "/",
                                       tree.files[x]))
       } #end folder if

@@ -10,11 +10,8 @@
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' align_bin = ape::read.dna("path/to/alignment.phy", format = "sequential")
+#' align_mat = alignmentConversion(input.alignment = align_bin, end.format = "matrix")
 #'
 #' @export
 

@@ -22,15 +22,19 @@
 #'
 #' @param min.trees minimum number of trees to keep a filtration replicate. Default: 10
 #'
-#' @return a folder saved as output.dir that contains the options for your best trees
+#' @return selected best-tree ASTRAL files are copied to output.dir and a
+#'   summary table "summary-best-datasets.txt" is written there; nothing is
+#'   returned in R
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' bestFilterTrees(anomaly.zone.data = anomaly.data,
+#'                 concordance.factors.data = concord.data,
+#'                 output.dir = "best-trees",
+#'                 fewest.anomaly.zones = TRUE,
+#'                 highest.post.prob = TRUE,
+#'                 highest.gene.cf = TRUE,
+#'                 min.trees = 20)
 #'
 #' @export
 
@@ -164,7 +168,7 @@ bestFilterTrees = function(anomaly.zone.data = anomaly.data,
 
     if (all.datasets == FALSE){
       #Orders and then gets top best
-      highest.pp = collect.data[order(collect.data$mean_pp, decreasing = F),]
+      highest.pp = collect.data[order(collect.data$mean_pp, decreasing = T),]
       highest.pp = highest.pp[1:top.best,]
       highest.pp = cbind(best_tree_category = "highest-posterior-probability", highest.pp)
       #Save the tree
@@ -180,7 +184,7 @@ bestFilterTrees = function(anomaly.zone.data = anomaly.data,
       for (i in 1:length(dataset.name)){
         highest.pp = collect.data[collect.data$dataset %in% dataset.name[i],]
         #Orders and then gets top best
-        highest.pp = highest.pp[order(highest.pp$mean_pp, decreasing = F),]
+        highest.pp = highest.pp[order(highest.pp$mean_pp, decreasing = T),]
         highest.pp = highest.pp[1:top.best,]
         highest.pp = cbind(best_tree_category = "highest-posterior-probability", highest.pp)
         #Save the tree

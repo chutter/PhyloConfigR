@@ -14,7 +14,10 @@
 #'
 #' @param overwrite if TRUE overwrites previous runs of the function
 #'
-#' @return a single BPP formatted concatenated alignment and optionally an IMAP file
+#' @return writes output.name_alignment.txt (BPP-format alignment),
+#'   output.name_Imap.txt (population assignments), output.name_species-tree.txt
+#'   (Newick tree with population names), and output.name_count-table.txt
+#'   (per-population sample counts); nothing is returned in R
 #'
 #' @examples
 #'

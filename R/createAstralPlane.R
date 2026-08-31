@@ -12,10 +12,10 @@
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
+#' astral.obj = createAstralPlane(astral.tree = "path/to/dataset_astral.tre",
+#'                                outgroups = c("species_one", "species_two"),
+#'                                tip.length = 1)
+#' astralProjection(astral.plane = astral.obj, pie.data = "qscore")
 #'
 #' @export
 

@@ -6,7 +6,9 @@
 #'
 #' @param local.posterior plot the local posterior support?
 #'
-#' @param pie.plot select one to plot: 'qscore' the quartet support or 'genetree' proportion of gene trees that support a branch
+#' @param pie.data select which values to show in the pie charts: 'qscore' plots
+#'   quartet frequencies (q1/q2/q3) or 'genetree' plots gene tree proportions
+#'   (f1/f2/f3)
 #'
 #' @param save.file if you wish to save to file, put file name. Saves as PDF
 #'

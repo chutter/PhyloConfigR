@@ -20,15 +20,21 @@
 #'
 #' @param count.pis.filters Your selected parsimony informatives sites filter as a vector of base pair counts
 #'
-#' @return Returns a summary of your selected filters applied to the dataset
+#' @return a data.frame (also written to file.out.csv if file.out is not NULL)
+#'   with one row per filter replicate and columns: align_dataset, filter_file,
+#'   filter_name, no_trees, mean_length, mean_sample, mean_prop_pis,
+#'   mean_count_pis, filter_length, filter_sample, filter_prop_pis,
+#'   filter_count_pis
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' filt.summary = filterSummary(alignment.data = align.summary,
+#'                               alignment.folder = "alignments",
+#'                               dataset.name = "exons",
+#'                               file.out = "filter_summary",
+#'                               length.filters = c(300, 500, 1000),
+#'                               sample.filters = c(0.5, 0.7, 0.9),
+#'                               overwrite = FALSE)
 #'
 #' @export
 

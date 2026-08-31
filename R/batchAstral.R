@@ -111,7 +111,7 @@ batchAstral = function(genetree.datasets = NULL,
 
     dataset.name = gsub(".*/", "", dataset.dirs[x])
 
-    AstralPlane::setupAstral(min.n.samples = min.n.samples,
+    PhyloConfigR::setupAstral(min.n.samples = min.n.samples,
                              min.sample.prop = min.sample.prop,
                              genetree.folder = dataset.dirs[x],
                              taxa.remove = taxa.remove,
@@ -123,7 +123,7 @@ batchAstral = function(genetree.datasets = NULL,
     #Moves to new folder
     out.file = paste0(dataset.name, "_genetrees.tre")
 
-    AstralPlane::runAstral(input.genetrees = paste0(output.dir, "/", out.file),
+    PhyloConfigR::runAstral(input.genetrees = paste0(output.dir, "/", out.file),
                            astral.t = astral.t,
                            output.name = paste0(output.dir, "/", dataset.name),
                            quiet = quiet,

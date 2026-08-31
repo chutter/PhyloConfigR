@@ -8,15 +8,16 @@
 #'
 #' @param outgroups outgroups to root the tree
 #'
-#' @return data.frame with concordance factor data for each filtered replicate
+#' @return a data.frame with one row per node per filtered dataset, containing
+#'   gCF, sCF, ASTRAL posterior probabilities, and (if clade.list is provided)
+#'   the clade name and monophyly status for focal nodes
 #'
 #' @examples
 #'
-#' your.tree = ape::read.tree(file = "file-path-to-tree.tre")
-#' astral.data = astralPlane(astral.tree = your.tree,
-#'                           outgroups = c("species_one", "species_two"),
-#'                           tip.length = 1)
-#'
+#' clade.list = list(clade_A = c("sp1", "sp2", "sp3"))
+#' concord.data = filterConcordance(input.dir = "concordance-factors",
+#'                                   clade.list = clade.list,
+#'                                   outgroups = c("outgroup_sp"))
 #'
 #' @export
 
@@ -41,7 +42,7 @@ filterConcordance = function(input.dir = NULL,
   for (x in 1:length(cf.files)){
 
     #Reads in the plane data
-    plane.data = AstralPlane::createAstralPlaneCF(cf.file.name = paste0(input.dir, "/", cf.files[x]),
+    plane.data = PhyloConfigR::createAstralPlaneCF(cf.file.name = paste0(input.dir, "/", cf.files[x]),
                                                   outgroups = outgroups,
                                                   tip.length = 1)
 

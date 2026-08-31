@@ -1,32 +1,41 @@
 #' @title alignmentsToStructure
 #'
-#' @description Function to trim a set of alignments to a provided target. The function operates across a directory of alignments that correspond to a single fasta file of capture targets
+#' @description Converts a folder of DNA alignments into STRUCTURE input format.
+#'   For each alignment, the single most informative and least-missing column is
+#'   selected. IUPAC heterozygous characters are split into two alleles per
+#'   sample, and nucleotides are encoded as integers (A=0, T=1, G=2, C=3,
+#'   missing=-9). A population membership file is required to define the sample
+#'   order. The final table is written as a space-delimited text file.
 #'
-#' @param alignment.directory path to a folder of sequence alignments
+#' @param alignment.directory path to a folder of alignment files in phylip or
+#'   fasta format
 #'
-#' @param alignment.format available input alignment formats: fasta or phylip
+#' @param alignment.format input alignment format: "phylip" or "fasta"
 #'
-#' @param output.directory new alignment directory where the trimmed output files are saved
+#' @param population.file path to a CSV file with columns "Sample" and
+#'   "Population" defining the population assignment of each sample
 #'
-#' @param output.format available output formats: phylip
+#' @param output.file path for the output STRUCTURE-format text file
 #'
-#' @param target.file path to the fasta file with the target sequences. These should be the entire marker, not the probe.
+#' @param min.count.taxa minimum number of taxa in an alignment to include it
+#'   (default: 4)
 #'
-#' @param target.direction TRUE ensures output alignments are the same direction as the targets
+#' @param min.percent.taxa minimum percentage of population samples present in
+#'   an alignment to include it (default: 50)
 #'
-#' @param min.alignment.length minimum alignment length to save in bp (default: 100)
+#' @param min.percent.column minimum percentage of samples that must be
+#'   non-missing in a column for it to be considered (default: 50)
 #'
-#' @param min.taxa.alignment mininum number of taxa to save alignment (default: 4)
+#' @param threads number of CPU threads (not yet implemented, reserved)
 #'
-#' @param threads number of CPU threads / processes
+#' @param memory memory in GB (currently informational)
 #'
-#' @param memory memory in GB
+#' @param overwrite if TRUE overwrites an existing output file
 #'
-#' @param overwrite TRUE to overwrite output files with the same name
+#' @param mafft.path reserved for future use
 #'
-#' @param mafft.path system path to the mafft program
-#'
-#' @return a new output directory with the trimmed alignments
+#' @return writes a STRUCTURE-format text file to output.file; nothing is
+#'   returned in R
 #'
 #' @examples
 #'
