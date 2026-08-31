@@ -1,6 +1,10 @@
 makeFakeIQTree = function(path){
   script = c(
     "#!/bin/sh",
+    "if [ \"$1\" = \"--version\" ]; then",
+    "  echo 'IQ-TREE multicore version 2.3.6 for MacOS ARM 64-bit built Jul 30 2024'",
+    "  exit 0",
+    "fi",
     "while [ \"$#\" -gt 0 ]; do",
     "  case \"$1\" in",
     "    -pre) prefix=\"$2\"; shift 2 ;;",

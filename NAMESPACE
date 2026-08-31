@@ -1,1 +1,12 @@
 exportPattern("^[[:alpha:]]+")
+
+# data.table must be imported, not merely listed in Imports. Its ':=' and
+# similar operators check that the calling namespace is data.table-aware
+# (cedta()), and without this the package fails at run time with
+# "[ was called on a data.table in an environment that is not data.table-aware".
+# Sourcing the R files hides the problem, because then the calls happen in the
+# global environment; it only appears once the package is installed.
+import(data.table)
+
+importFrom("stats", "setNames")
+importFrom("utils", "read.table", "write.table", "packageVersion")

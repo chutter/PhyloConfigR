@@ -59,7 +59,7 @@ The following programs must be installed and accessible on your `PATH` to use th
 
 | Program | Purpose | URL |
 |---------|---------|-----|
-| IQ-TREE 2 (>=2.0) | Gene tree estimation, concordance factors, concatenation tree | http://www.iqtree.org |
+| IQ-TREE 2 (>=2.0) or 3 | Gene tree estimation, concordance factors, concatenation tree. Version 2 installs as `iqtree2` and version 3 as `iqtree`; either is found automatically | http://www.iqtree.org |
 | ASTRAL-III | Coalescent species tree inference | https://github.com/smirarab/ASTRAL |
 | Java (>=11) | Required to run ASTRAL | https://adoptium.net |
 | HyPhy | Selection analyses (SLAC, BUSTED, aBSREL) | https://hyphy.org |
@@ -89,8 +89,9 @@ The following programs must be installed and accessible on your `PATH` to use th
 
 | Function | Description |
 |----------|-------------|
-| `estimateGeneTrees()` | Estimate gene trees from a folder of alignments using IQ-TREE 2 |
-| `analysis.concatenationTree()` | Estimate a concatenation tree with IQ-TREE 2 |
+| `estimateGeneTrees()` | Estimate gene trees from a folder of alignments using IQ-TREE |
+| `analysis.concatenationTree()` | Estimate a concatenation tree with IQ-TREE; set `uf.bootstrap = 0` to skip UFBoot inside resampling procedures |
+| `findIQTREE()` | Locate an IQ-TREE executable and report its version |
 | `filterGeneTrees()` | Filter gene trees based on alignment statistics |
 | `bestFilterTrees()` | Select best gene trees from a filtered set based on posterior probability |
 

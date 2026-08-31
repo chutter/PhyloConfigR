@@ -1,9 +1,10 @@
 #' @title analysis.concatenationTree
 #'
-#' @description Runs IQ-TREE 2 on a concatenated alignment to estimate a
-#'   maximum-likelihood species tree. Supports MFP model selection with optional
-#'   partition merging, codon partitioning, and UFBoot branch support. The
-#'   alignment is copied into a per-run subdirectory inside output.directory.
+#' @description Estimates a maximum likelihood tree from a concatenated
+#'   alignment with IQ-TREE. Handles partitioned and unpartitioned runs, finds
+#'   the IQ-TREE executable regardless of whether version 2 or 3 is installed,
+#'   and makes UFBoot optional so the function can be used inside resampling
+#'   procedures that do their own replication.
 #'
 #' @param alignment.file path to the concatenated alignment file in phylip format
 #'
@@ -15,136 +16,172 @@
 #'   partition.scheme = "file")
 #'
 #' @param partition.scheme how to handle partitions: "file" uses a provided
-#'   partition file; "merge" uses MFP+MERGE to find optimal merging;
-#'   "none" fits a single GTR model
+#'   partition file with ModelFinder, "merge" runs ModelFinder with partition
+#'   merging, "none" runs unpartitioned (default: "file")
+#'
+#' @param model model passed to IQ-TREE when partition.scheme = "none"; ignored
+#'   for the partitioned schemes, which use ModelFinder (default: "GTR")
 #'
 #' @param codon.partition if TRUE adds -st CODON flag for codon-aware model
-#'   fitting (requires in-frame codon alignment)
 #'
 #' @param program reserved for future use; currently only "IQTREE" is supported
 #'
 #' @param msub.type substitution model category passed to IQ-TREE -msub flag;
-#'   "nuclear" or "mitochondrial"
+#'   "nuclear" or "mitochondrial" (default: "nuclear")
 #'
-#' @param uf.bootstrap number of ultrafast bootstrap replicates (default: 100)
+#' @param uf.bootstrap number of UFBoot replicates; use 0 to disable, otherwise
+#'   1000 or more, which is IQ-TREE's own minimum (default: 1000)
 #'
 #' @param rcluster percentage of partitions used in the rcluster algorithm for
-#'   partition model selection (default: 100)
+#'   partition merging
 #'
 #' @param threads number of CPU threads passed to IQ-TREE -nt flag
 #'
-#' @param memory memory in GB (currently informational)
+#' @param memory memory in GB passed to IQ-TREE -mem flag
 #'
-#' @param iqtree.path path to the directory containing the iqtree2 executable,
-#'   or NULL if iqtree2 is on the system PATH
+#' @param iqtree.path path to an IQ-TREE executable or the directory containing
+#'   it; use NULL if iqtree2 or iqtree is on the system PATH
 #'
-#' @param resume if TRUE allows IQ-TREE to resume an interrupted run
+#' @param seed optional IQ-TREE random seed for reproducible runs
+#'
+#' @param quiet if TRUE passes -quiet to IQ-TREE
+#'
+#' @param resume if TRUE returns without running when a treefile already exists
 #'
 #' @param overwrite if TRUE removes the existing output directory before running
 #'
-#' @return IQ-TREE output files are written to output.directory/output.name/;
-#'   nothing is returned in R
+#' @return invisibly returns the path to the treefile
 #'
 #' @examples
 #'
-#' analysis.concatenationTree(alignment.file = "concat_alignment.phy",
-#'                             output.directory = "concat-trees",
-#'                             output.name = "all-markers",
-#'                             partition.scheme = "merge",
-#'                             uf.bootstrap = 1000,
-#'                             threads = 4)
+#' analysis.concatenationTree(alignment.file = "concatenated/my_concat.phy",
+#'                            output.directory = "concatenation-trees",
+#'                            output.name = "my_concat",
+#'                            partition.scheme = "merge",
+#'                            uf.bootstrap = 1000,
+#'                            threads = 8)
+#'
+#' #Inside a jackknife or other resampling procedure, where the resampling is
+#' #the replication and a per-replicate bootstrap would only add runtime:
+#'
+#' analysis.concatenationTree(alignment.file = "replicates/rep_0001.phy",
+#'                            output.directory = "replicate-trees",
+#'                            output.name = "rep_0001",
+#'                            partition.scheme = "none",
+#'                            model = "GTR+G",
+#'                            uf.bootstrap = 0,
+#'                            threads = 4)
 #'
 #' @export
 
 analysis.concatenationTree = function(alignment.file = NULL,
-                                      output.directory = NULL,
-                                      output.name = NULL,
-                                      partition.file = NULL,
-                                      partition.scheme = c("file", "merge", "none"),
-                                      codon.partition = FALSE,
-                                      program = "IQTREE",
-                                      msub.type = c("mitochondrial", "nuclear"),
-                                      uf.bootstrap = 100,
-                                      rcluster = 100,
-                                      threads = 1,
-                                      memory = 1,
-                                      iqtree.path = NULL,
-                                      resume = TRUE,
-                                      overwrite = FALSE) {
+                             output.directory = NULL,
+                             output.name = NULL,
+                             partition.file = NULL,
+                             partition.scheme = c("file", "merge", "none"),
+                             model = "GTR",
+                             codon.partition = FALSE,
+                             program = "IQTREE",
+                             msub.type = c("nuclear", "mitochondrial"),
+                             uf.bootstrap = 1000,
+                             rcluster = 100,
+                             threads = 1,
+                             memory = 1,
+                             iqtree.path = NULL,
+                             seed = NULL,
+                             quiet = FALSE,
+                             resume = TRUE,
+                             overwrite = FALSE) {
 
-  #Debug
-  # alignment.file = alignment.files[i]
-  # output.directory = out.path
-  # output.name = align.name
-  # partition.file = NULL
-  # partition.scheme = "merge"
-  # codon.partition = FALSE
-  # program = "IQTREE"
-  # msub.type = "nuclear"
-  # uf.bootstrap = uf.bootstrap
-  # rcluster = rcluster
-  # threads = threads
-  # memory = memory
-  # iqtree.path = iqtree.path
-  # resume = resume
-  # overwrite = overwrite
+  #match.arg picks the first choice when the argument is left at its default.
+  #Without it the default is the whole vector, and comparing it with == is an
+  #error in R 4.2 and later, so the function could not be called on defaults.
+  partition.scheme = match.arg(partition.scheme)
+  msub.type = match.arg(msub.type)
 
-  #Checks and formats path
-  if (is.null(iqtree.path) == FALSE){
-    b.string = unlist(strsplit(iqtree.path, ""))
-    if (b.string[length(b.string)] != "/") {
-      iqtree.path = paste0(append(b.string, "/"), collapse = "")
-    }#end if
-  } else { iqtree.path = NULL }
-
-  if (alignment.file == output.directory){ stop("You should not overwrite the original alignments.") }
-
-  # if (dir.exists(output.dir) == FALSE) { dir.create(output.dir) }
-
-  #So I don't accidentally delete everything while testing resume
-  if (resume == TRUE & overwrite == TRUE){
-    overwrite = FALSE
+  if (is.null(alignment.file) || file.exists(alignment.file) == FALSE){ stop("A valid alignment.file is needed.") }
+  if (is.null(output.directory)){ stop("An output.directory is needed.") }
+  if (is.null(output.name)){ stop("An output.name is needed.") }
+  if (length(uf.bootstrap) != 1 || is.numeric(uf.bootstrap) == FALSE || uf.bootstrap < 0){ stop("uf.bootstrap must be 0 or greater.") }
+  if (uf.bootstrap > 0 && uf.bootstrap < 1000){ stop("IQ-TREE requires at least 1000 UFBoot replicates. Use uf.bootstrap = 0 to disable bootstrapping.") }
+  if (length(memory) != 1 || is.numeric(memory) == FALSE || memory <= 0){ stop("memory must be greater than 0 GB.") }
+  if (is.null(seed) == FALSE && (length(seed) != 1 || is.numeric(seed) == FALSE || seed < 1)){ stop("seed must be NULL or a positive number.") }
+  if (partition.scheme == "file" && (is.null(partition.file) || file.exists(partition.file) == FALSE)){
+    stop("partition.scheme = 'file' needs a partition.file that exists.")
+  }
+  if (resume == TRUE && overwrite == TRUE){
     stop("Error: resume = T and overwrite = T, cannot resume if you are going to delete everything!")
   }
+  if (identical(normalizePath(alignment.file, winslash = "/", mustWork = FALSE),
+                normalizePath(output.directory, winslash = "/", mustWork = FALSE))){
+    stop("You should not overwrite the original alignments.")
+  }
 
-  if (dir.exists(output.directory) == TRUE) {
+  if (is.numeric(threads) && length(threads) == 1 && threads >= 1){
+    threads = as.character(as.integer(threads))
+  } else if (length(threads) == 1 && toupper(as.character(threads)) == "AUTO"){
+    threads = "AUTO"
+  } else { stop("threads must be a positive number or 'AUTO'.") }
+
+  #Finds IQ-TREE, whether it is installed as iqtree2 (version 2) or iqtree (version 3)
+  iqtree = findIQTREE(iqtree.path = iqtree.path, quiet = quiet)
+
+  if (dir.exists(output.directory) == TRUE){
     if (overwrite == TRUE){
-      system(paste0("rm -r ", output.directory))
-      dir.create(output.directory)
+      unlink(output.directory, recursive = TRUE)
+      dir.create(output.directory, recursive = TRUE)
     }
-  } else { dir.create(output.directory) }
-#
-#   #Gathers alignments
-#   iq.files = list.files(alignment.dir)
-#
-#   if (length(align.files) == 0) { stop("alignment files could not be found.") }
-#
-#   #Skips files done already if resume = TRUE
-#   if (resume == TRUE){
-#     done.files = list.files(output.dir)
-#     align.files = align.files[!gsub("\\..*", "", align.files) %in% gsub("\\..*", "", done.files)]
-#   }
+  } else { dir.create(output.directory, recursive = TRUE) }
+
+  run.dir = file.path(output.directory, output.name)
+  dir.create(run.dir, recursive = TRUE, showWarnings = FALSE)
+
+  run.alignment = file.path(run.dir, "alignment.phy")
+  tree.file = file.path(run.dir, paste0(output.name, ".treefile"))
+
+  if (resume == TRUE && file.exists(tree.file) == TRUE){
+    if (quiet == FALSE){ print(paste0(output.name, " already has a treefile, skipping.")) }
+    return(invisible(tree.file))
+  }
+
+  file.copy(alignment.file, run.alignment, overwrite = TRUE)
 
   #Sets up parameter type selections from above
-  part.file = ""
-  part.scheme = "MFP"
-  if (partition.scheme == "merge"){ part.scheme = paste0(part.scheme, "+MERGE") }
-  if (partition.scheme == "file"){ part.file = paste0(" -spp ", partition.file) }
-  if (partition.scheme == "none"){ part.scheme = "GTR" }
-  if (codon.partition == T){ codon.st = " -st CODON" } else { codon.st = "" }
+  iqtree.args = c("-s", run.alignment,
+                  "-pre", file.path(run.dir, output.name),
+                  "-nt", threads,
+                  "-mem", paste0(memory, "G"),
+                  "-msub", msub.type)
 
-  dir.create(paste0(output.directory, "/", output.name))
-  system(paste0("cp ", alignment.file, " ", output.directory, "/", output.name, "/alignment.phy"))
+  if (partition.scheme == "none"){
+    iqtree.args = c(iqtree.args, "-m", model)
+  } else {
+    part.scheme = "MFP"
+    if (partition.scheme == "merge"){
+      part.scheme = paste0(part.scheme, "+MERGE")
+      iqtree.args = c(iqtree.args, "-rcluster", rcluster)
+    }
+    if (partition.scheme == "file"){ iqtree.args = c(iqtree.args, "-spp", partition.file) }
+    iqtree.args = c(iqtree.args, "-m", part.scheme)
+  }
+
+  #uf.bootstrap = 0 leaves -bb off entirely. IQ-TREE rejects -bb below 1000, so
+  #passing a small number here used to make the run fail rather than run faster.
+  if (uf.bootstrap > 0){ iqtree.args = c(iqtree.args, "-bb", as.integer(uf.bootstrap)) }
+  if (codon.partition == TRUE){ iqtree.args = c(iqtree.args, "-st", "CODON") }
+  if (is.null(seed) == FALSE){ iqtree.args = c(iqtree.args, "-seed", as.integer(seed)) }
+  if (quiet == TRUE){ iqtree.args = c(iqtree.args, "-quiet") }
+  if (resume == FALSE){ iqtree.args = c(iqtree.args, "-redo") }
 
   #Runs IQTree
-  system(paste0(iqtree.path, "iqtree2 -s ", output.directory, "/", output.name, "/alignment.phy", part.file,
-                " -bb ", uf.bootstrap,
-                " -nt ", threads,
-                " -m ", part.scheme, codon.st,
-                " -rcluster ", rcluster,
-                " -msub ", msub.type))
+  command = paste(shQuote(c(iqtree$path, iqtree.args)), collapse = " ")
+  if (quiet == FALSE){ cat(paste0(command, "\n")) }
+  run.status = system(command)
+
+  if (run.status != 0){ stop("IQ-TREE exited with status ", run.status, " for ", output.name) }
+  if (file.exists(tree.file) == FALSE){ stop("IQ-TREE produced no treefile for ", output.name) }
 
   print(paste0(output.name, " finished concatenation tree estimation!"))
+  return(invisible(tree.file))
 
 }#end function
-

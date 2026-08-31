@@ -10,7 +10,8 @@
 #'
 #' @param output.name the output name for the concordance files
 #'
-#' @param iqtree.path the full path to the iqtree executable if R cannot find it in the R path
+#' @param iqtree.path path to an IQ-TREE executable or the directory containing
+#'   it; use NULL if iqtree2 (version 2) or iqtree (version 3) is on the PATH
 #'
 #' @param overwrite overwrite = TRUE to overwrite existing files
 #'
@@ -35,7 +36,7 @@ concordanceFactors = function(species.tree = NULL,
                               alignment = NULL,
                               gene.trees = NULL,
                               output.name = NULL,
-                              iqtree.path = "iqtree2",
+                              iqtree.path = NULL,
                               overwrite = FALSE,
                               quiet = TRUE,
                               threads = 1) {
@@ -82,6 +83,10 @@ concordanceFactors = function(species.tree = NULL,
       return("Overwrite = F and file exists. Skipping.")
     }#end if
   }#end if
+
+  #IQ-TREE 2 installs as iqtree2 and version 3 as iqtree, so the executable is
+  #resolved rather than assumed.
+  iqtree.path = findIQTREE(iqtree.path = iqtree.path, quiet = quiet)$path
 
   system(paste0(iqtree.path, " -t ", species.tree,
                 " --gcf ", gene.trees,

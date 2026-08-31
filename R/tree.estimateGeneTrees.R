@@ -29,8 +29,8 @@
 #' @param cleanup.files if TRUE removes IQ-TREE auxiliary files after a valid
 #'   tree is produced; defaults to FALSE so model and bootstrap information is kept
 #'
-#' @param iqtree.path path to the iqtree2 executable or the directory containing
-#'   it; use NULL if iqtree2 is on the system PATH
+#' @param iqtree.path path to an IQ-TREE executable or the directory containing
+#'   it; use NULL if iqtree2 (version 2) or iqtree (version 3) is on the PATH
 #'
 #' @param model model or ModelFinder command passed to IQ-TREE (default: "MFP")
 #'
@@ -91,15 +91,9 @@ estimateGeneTrees = function(alignment.directory = NULL,
     threads = "AUTO"
   } else { stop("threads must be a positive number or 'AUTO'.") }
 
-  #Finds IQ-TREE
-  if (is.null(iqtree.path)){
-    iqtree.exe = unname(Sys.which("iqtree2"))
-  } else if (dir.exists(iqtree.path)){
-    iqtree.exe = file.path(iqtree.path, "iqtree2")
-  } else { iqtree.exe = iqtree.path }
-  if (length(iqtree.exe) == 0 || nzchar(iqtree.exe) == FALSE || file.exists(iqtree.exe) == FALSE){
-    stop("The iqtree2 executable could not be found.")
-  }
+  #Finds IQ-TREE. Version 2 installs as iqtree2 and version 3 as iqtree, so
+  #both names are tried rather than assuming one of them.
+  iqtree.exe = findIQTREE(iqtree.path = iqtree.path, quiet = quiet)$path
 
   #Protects the alignments from overwrite
   alignment.path = normalizePath(alignment.directory, winslash = "/", mustWork = TRUE)
