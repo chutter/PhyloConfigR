@@ -1,3 +1,11 @@
+# PhyloConfigR (development version)
+
+## Fixes
+
+* `plot.filterNode()` now uses `filter.name = "proportion_samples"`, the name
+  that `filterSummary()` writes. The old choice, `"proportion_sample"`, matched
+  no rows and stopped with a `data.frame()` row-count error.
+
 # PhyloConfigR 0.3.2
 
 ## Fixes

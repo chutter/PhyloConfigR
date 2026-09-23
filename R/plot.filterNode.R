@@ -12,7 +12,7 @@
 #'
 #' @param focal.node the node annotated from the filterConcordance function
 #'
-#' @param filter.name the filter to plot. Options include: alignment_length, count_pis, proportion_pis, proportion_sample
+#' @param filter.name the filter to plot. Options include: alignment_length, count_pis, proportion_pis, proportion_samples
 #'
 #' @param dataset.name from your main sets of data (i.e. exons, introns). All = plots of all them.
 #'
@@ -48,7 +48,7 @@ plot.filterNode = function(anomaly.zone.data = NULL,
                            save.plots = TRUE,
                            output.dir = "Filter-Plots",
                            focal.node = NULL,
-                           filter.name = c("alignment_length", "count_pis", "proportion_pis", "proportion_sample"),
+                           filter.name = c("alignment_length", "count_pis", "proportion_pis", "proportion_samples"),
                            dataset.name = NULL,
                            plot.gcf = TRUE,
                            plot.scf = TRUE,
@@ -110,7 +110,7 @@ plot.filterNode = function(anomaly.zone.data = NULL,
   if (filter.name == "alignment_length"){ sub.data$final_filter = sub.data$filter_length }
   if (filter.name == "count_pis"){ sub.data$final_filter = sub.data$filter_count_pis }
   if (filter.name == "proportion_pis"){ sub.data$final_filter = sub.data$filter_prop_pis }
-  if (filter.name == "proportion_sample"){ sub.data$final_filter = sub.data$filter_sample }
+  if (filter.name == "proportion_samples"){ sub.data$final_filter = sub.data$filter_sample }
 
   if (dataset.name != "all"){
     sub.data = sub.data[sub.data$align_dataset %in% dataset.name,]

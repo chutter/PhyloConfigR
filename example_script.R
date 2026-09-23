@@ -518,7 +518,7 @@ erroneousZone = function(species.tree.file = NULL,
                          remove.taxa = NULL,
                          output.dir = "Erroneous-Zone",
                          dataset.name = "all",
-                         filter.name = c("alignment_length", "count_pis", "proportion_pis", "proportion_sample"),
+                         filter.name = c("alignment_length", "count_pis", "proportion_pis", "proportion_samples"),
                          zone.colors = c("#7BC143", "#DE3293") ) {
 
   #Debug
@@ -531,7 +531,7 @@ erroneousZone = function(species.tree.file = NULL,
   alignment.summary = alignment.summary[alignment.summary$dataset %in% "all-markers_trimmed",]
   output.dir = "Erroneous-Zone"
   dataset.name = "all"
-  filter.name = c("alignment_length", "count_pis", "proportion_pis", "proportion_sample")
+  filter.name = c("alignment_length", "count_pis", "proportion_pis", "proportion_samples")
   zone.colors = c("#7BC143", "#DE3293")
 
   #nitial checks
@@ -784,7 +784,7 @@ erroneousZone = function(species.tree.file = NULL,
   if (filter.name == "alignment_length"){ sub.data$final_filter = sub.data$filter_length }
   if (filter.name == "count_pis"){ sub.data$final_filter = sub.data$filter_count_pis }
   if (filter.name == "proportion_pis"){ sub.data$final_filter = sub.data$filter_prop_pis }
-  if (filter.name == "proportion_sample"){ sub.data$final_filter = sub.data$filter_sample }
+  if (filter.name == "proportion_samples"){ sub.data$final_filter = sub.data$filter_sample }
 
   if (dataset.name != "all"){
     sub.data = sub.data[sub.data$align_dataset %in% dataset.name,]
